@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block title %}
+  Manage
+{% endblock %}
+{% block content %}
+
+  <main class="content">
+    <div class="container-fluid p-0 justify-content-center d-flex">
+      <div class="col-xl-12 col-xxl-7">
+        <div class="card flex-fill w-100">
+          <div class="card-body py-3">
+            <div class="row">
+              <div class="col-12 col-lg-8 col-xxl-12 d-flex">
+                <div class="card flex-fill">
+                  <div class="card-header">
+                    <h5 class="card-title mb-0">All students</h5>
+                    <div class="sort pt-3">
+                      <form method="POST" action="{% url 'update_attendance' %}" class="d-flex" style="gap: 10px;">
+                        {% csrf_token %}
+                        <div class="form-group">
+                          <select class="form-control" name="department" id="department">
+                            <option value="">Select Department</option>
+                            {% for dep in All_department %}
+                            <option value="{{ dep.id }}">{{ dep.name }}</option>
+                            {% endfor %}
+                          </select>
+                        </div>
+                        <div class="form-group">
+                          <select class="form-control" name="batch" id="batch">
+                            <option value="">Select Batch</option>
+                            {% for bach in All_batch %}
+                            <option value="{{ bach.id }}">{{bach}}</option>
+                            {% endfor %}
+                          </select>
+                        </div>
+                        <button class="btn btn-primary " type="submit" style="height: 40px;">Search</button>
+                      </form>
+                    </div>
+                  </div>
+                  <table class="table table-hover my-0">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th class="d-none d-xl-table-cell">Department</th>
+                        <th class="d-none d-xl-table-cell">Batch</th>
+                        <th class="d-none d-md-table-cell">Attendance</th>
+                        <th class="d-none d-md-table-cell"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% if All_students %}
+                      {% for student in All_students %}
+                      <tr>
+                        <td>{{ student.first_name }} {{ student.last_name }}</td>
+                        <td class="d-none d-xl-table-cell">{{ student.department.name }}</td>
+                        <td class="d-none d-xl-table-cell">{{ student.bach     }}</td>
+                        <td class="d-none d-md-table-cell text-white {% if student.attendence == 'Present' %}bg-success{% else %}bg-danger{% endif %}">
+                          {{ student.attendence }}
+                        </td>
+                        <td>
+                          <button class="d-none d-md-table-cell btn bg-primary text-white mark-attendance bg-success " data-student-id="{{ student.id }}" data-status="{% if student.attendence == 'Present' %}Absent{% else %}Present{% endif %}">
+                            Mark attendance
+                          </button>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                      {% else %}
+                      <tr>
+                        <td colspan="5">No students found.</td>
+                      </tr>
+                      {% endif %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+  $(document).ready(function(){
+      $('.mark-attendance').on('click', function() {
+          var button = $(this);
+          var studentId = button.data('student-id');
+          var newStatus = button.data('status');
+  
+          $.ajax({
+              url: '{% url "update_attendance_status" %}',
+              type: 'POST',
+              data: {
+                  'student_id': studentId,
+                  'status': newStatus,
+                  'csrfmiddlewaretoken': '{{ csrf_token }}'
+              },
+              success: function(response) {
+                  if (response.status === 'success') {
+                      $('#attendance-status-' + studentId).text(response.new_status);
+                      button.data('status', response.new_status === 'Present' ? 'Absent' : 'Present');
+                      button.toggleClass('bg-success bg-danger text-white', response.new_status === 'Present');
+                  } else {
+                      alert(response.message);
+                  }
+              },
+              error: function() {
+                  alert('An error occurred while updating attendance.');
+              }
+          });
+      });
+  });
+  </script>
+
+{% endblock %}

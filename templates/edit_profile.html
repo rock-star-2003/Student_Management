@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-sm p-3 border rounded mt-3">
+    <h1 class="text-center">Edit Profile</h1>
+    <form method="POST" action="{% url 'edit_profile' student.id %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="first_name">First Name</label>
+            <input type="text" class="form-control" name="first_name" id="first_name" value="{{ form.first_name.value|default:student.first_name }}">
+        </div>
+        <div class="form-group">
+            <label for="last_name">Last Name</label>
+            <input type="text" class="form-control" name="last_name" id="last_name" value="{{ form.last_name.value|default:student.last_name }}">
+        </div>
+        <div class="form-group">
+            <label for="email">Email address</label>
+            <input type="email" class="form-control" name="email" id="email" value="{{ form.email.value|default:student.email }}">
+        </div>
+        <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="text" class="form-control" name="phone" id="phone" value="{{ form.phone.value|default:student.phone }}">
+        </div>
+        <div class="form-group">
+            <label for="date_of_birth">Date of Birth</label>
+            <input type="date" class="form-control" name="date_of_birth" id="date_of_birth" value="{{ form.date_of_birth.value|default:student.date_of_birth|date:'d-y-m' }}">
+        </div>
+        <!-- Blood Group Selection -->
+        <div class="form-group">
+            <label for="blood_group">Blood Group</label>
+            <select class="form-control" name="blood_group" id="blood_group">
+                <option value="">Select Blood Group</option>
+                <option value="A+" {% if form.blood_group.value == "A+" %}selected{% elif student.blood_group == "A+" %}selected{% endif %}>A+</option>
+                <option value="A-" {% if form.blood_group.value == "A-" %}selected{% elif student.blood_group == "A-" %}selected{% endif %}>A-</option>
+                <option value="B+" {% if form.blood_group.value == "B+" %}selected{% elif student.blood_group == "B+" %}selected{% endif %}>B+</option>
+                <option value="B-" {% if form.blood_group.value == "B-" %}selected{% elif student.blood_group == "B-" %}selected{% endif %}>B-</option>
+                <option value="AB+" {% if form.blood_group.value == "AB+" %}selected{% elif student.blood_group == "AB+" %}selected{% endif %}>AB+</option>
+                <option value="AB-" {% if form.blood_group.value == "AB-" %}selected{% elif student.blood_group == "AB-" %}selected{% endif %}>AB-</option>
+                <option value="O+" {% if form.blood_group.value == "O+" %}selected{% elif student.blood_group == "O+" %}selected{% endif %}>O+</option>
+                <option value="O-" {% if form.blood_group.value == "O-" %}selected{% elif student.blood_group == "O-" %}selected{% endif %}>O-</option>
+            </select>
+        </div>
+
+        <!-- Gender Selection -->
+        <div class="form-group">
+            <label for="gender">Gender</label>
+            <select class="form-control" name="gender" id="gender">
+                <option value="">Select Gender</option>
+                <option value="Male" {% if form.gender.value == "Male" %}selected{% elif student.gender == "Male" %}selected{% endif %}>Male</option>
+                <option value="Female" {% if form.gender.value == "Female" %}selected{% elif student.gender == "Female" %}selected{% endif %}>Female</option>
+                <option value="Other" {% if form.gender.value == "Other" %}selected{% elif student.gender == "Other" %}selected{% endif %}>Other</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="address">Address</label>
+            <textarea class="form-control" name="address" id="address" rows="3">{{ form.address.value|default:student.address }}</textarea>
+        </div>
+
+        <!-- Submit button to POST the form -->
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a href="{% url 'index' %}" class="btn btn-secondary">Home</a>
+    </form>
+</div>
+{% endblock %}

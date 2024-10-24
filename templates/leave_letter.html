@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Leave letter {% endblock title %}
+{% block content %}
+{% if user.is_authenticated %}
+<div class="container">
+    <form action="" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="subject">Subject:</label>
+        <input type="text " class="form-control" name="subject" id="subject" placeholder="Subject" >
+      </div>
+      <div class="form-group">
+        <label for="description">Description:</label>
+        <textarea class="form-control" name="description" id="description" rows="15"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="attachment">Attach a file:</label>
+        <input type="file" name="attachment" id="attachment">
+      </div>
+      <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+  </div>
+  {% else %}
+    <p>You must be logged in to send a leave letter.</p>
+    <a href="{% url 'login' %}">Login</a>
+  {% endif %}
+{% endblock content %}

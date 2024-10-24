@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+  <h1 class="text-center p-3">Student Profile</h1>
+  <div class="  row ">
+    <div class="col-md-6 mb-3">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Personal Info</h3>
+        </div>
+        <div class="card-body">
+          <p><b>Name:</b> {{ student.first_name }} {{student.last_name }}</p>
+          <p><b>Age:</b> {{ age }}</p>
+          <p><b>Genter :</b> {{ student.gender }}</p>
+          <p><b>DOB:</b> {{ student.date_of_birth }}</p>
+          <p><b>Blood Group:</b> {{ student.blood_group }}</p>
+          <p><b>Phone Number:</b> {{ student.phone }}</p>
+          <p><b>Email:</b> {{ student.email }}</p>
+          <p><b>Address:</b> {{ student.address }}</p>
+          <div class="text-right pt-5">
+            {% if user.is_authenticated and not user.is_staff %}
+            <a href="{% url 'edit_profile' user.id %}?first_name={{ user.student.first_name }}&last_name={{ user.student.last_name }}&email={{ user.student.email }}&phone={{ user.student.phone }}&address={{ user.student.address }}" class="btn btn-primary">
+              <i class="fas fa-edit"></i> Edit Profile
+            </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Academic Info</h3>
+        </div>
+        <div class="card-body">
+          <p><b>Department:</b> {{ student.department }}</p>
+          <p><b>Batch :</b> {{student.bach.month}} {{ student.bach.bach}}</p>
+          <p><b>Batch Time :</b> {{student.bach.class_time}}</p>
+          <p style="color: {% if student.fees == 'Unpaid' %}red{% elif student.fees == 'paid' %}green{% else %}blue{% endif %};">
+            <b>Fees Status:</b> {{ student.fees|default_if_none:'N/A' }}
+            {% if user.student.fees == 'Unpaid' and user.is_authenticated and not user.is_staff %}
+              <a href="{% url 'fee_payment' user.id %}?user_id={{ user.student.id }}& username={{ user.username }}">Click here to pay fees</a>
+            {% endif %}
+          </p>
+          <p style="color:  {% if student.attendence == 'Absent' %} red {% else %}green{% endif %}; ">
+            <b style="">Attendance Status:</b> 
+            {{ student.attendence}} {% if user.student.attendence == 'Absent' and user.is_authenticated and not user.is_staff %} <a href="{% url "leave_letter" user.student.id %}">Click here to Submit a leave letter</a> {% endif %}
+          </p>
+          {% comment %} <p><b>Exam Results:</b> exam</p> {% endcomment %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

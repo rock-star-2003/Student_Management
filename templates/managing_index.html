@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% block title %}
+  Manage
+{% endblock %}
+{% block content %}
+  <main class="content">
+    <div class="container-fluid p-0">
+      <h1 class="h3 mb-3"><strong>Analytics</strong> Dashboard</h1>
+
+      <div class="row">
+        <div class="col-xl-6 col-xxl-5 d-flex">
+          <div class="w-100">
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col mt-0">
+                        <h5 class="card-title">Departments</h5>
+                      </div>
+                    </div>
+                    <h1 class="mt-1 mb-3">{{ department_count }} Departments </h1>
+                    <div class="mb-0">
+                      <span class="text-muted">With Total Students : </span>
+                      <span class=""><i class="mdi mdi-arrow-bottom-right"></i> {{student_count}}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col mt-0">
+                        <h5 class="card-title">Fees status</h5>
+                      </div>
+                    </div>
+                    <h1 class="mt-1 mb-3">Paid : {{students_paid_fees}}</h1>
+                    <div class="mb-0">
+                      <span class="text-muted"><i class="mdi mdi-arrow-bottom-right"></i> </span>
+                      <span class="text-danger">Unpaid : {{students_Unpaid_fees}} </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col mt-0">
+                        <h5 class="card-title">Attentance</h5>
+                      </div>
+                    </div>
+                    <h1 class="mt-1 mb-3">Present : {{present}} </h1>
+                    <div class="mb-0">
+                      <span class="text-muted">Absance : </span>
+                      <span class="text-danger"><i class="mdi mdi-arrow-bottom-right"></i> {{absence}}</span> 
+                      <a href="{% url "update_attendance" %}">
+                      <button class="btn btn-primary btn-sm ml-5 rounded" >Update attentance</button>
+                    </a>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col mt-0">
+                        <h5 class="card-title">Bach</h5>
+                      </div>
+                    </div>
+                    <h1 class="mt-1 mb-3">Total : {{bach_count}} Bach</h1>
+                    <div class="mb-0">
+                      <span class="text-muted">Since last 6 months</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-6 col-xxl-7" >
+          <div class="card flex-fill w-100" style="max-height: 60vh; overflow-y: scroll;">
+            <div class="card-body py-3">
+              <div class="row">
+                <div class="col-12 col-lg-8 col-xxl-12 d-flex">
+                  <div class="card flex-fill">
+                    <div class="card-header">
+    
+                      <h5 class="card-title mb-0">All students</h5>
+                    </div>
+                    <table class="table table-hover my-0">
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th class="d-none d-xl-table-cell">Department</th>
+                          <th class="d-none d-xl-table-cell">Bach</th>
+                          <th>Fees</th>
+                          <th class="d-none d-md-table-cell">Attentance</th>
+                          <th class="d-none d-md-table-cell"></th>
+
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for student in All_students %}
+                        <div>
+                          <tr>
+                            <td>{{student.first_name}} {{student.last_name}} </td>
+                            <td class="d-none d-xl-table-cell">{{student.department}}</td>
+                            <td class="d-none d-xl-table-cell">{{student.bach}}</td>
+                            <td><span class="badge {% if student.fees == 'paid' %}bg-success{% else %}bg-danger{% endif %}">{{student.fees}}</span></td>
+                            <td class="d-none d-md-table-cell {% if student.attendence == 'Present' %}bg-success{% else %}bg-danger{% endif %}">{{student.attendence}}</td>
+                            <td> <a href="{% url "view_student"  student.id  %}"><button class="d-none d-md-table-cell btn bg-primary text-white" >view</button></a></td>
+
+                          </tr>
+                        </div>
+                          {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+{% endblock %}
